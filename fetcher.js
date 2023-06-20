@@ -16,7 +16,8 @@
     - use nested callbacks to control asynchronous operations 
  */
 
-//require  fs
+//require request and fs
+const request = require('request');
 const fs = require('fs');
 
 //retrieve command line arguments
@@ -59,3 +60,24 @@ if (!isPathValid(filePath)) {
     console.error('Invalid file path');
     process.exit(1);
 }
+//use nested callbacks to control the asynchronous operations
+// make http request
+request(url, (error, response, body) => {
+  // Print the error if one occurred during the HTTP request
+  if(error){
+    console.error('Error:', error);
+    process.exit(1);
+  }
+   
+ fs.writeFile(filePath, body,(error) =>{
+    //print if any errors during file writing
+    if (error){
+      console.error("Failed to write to specified local path");
+      process.exit(1);
+    } else {
+      //If successful, print this message with length of the downloaded data and file path
+        console.log(`Downloaded and saved ${body.length} bytes to ${filePath}`);
+      }
+  }); 
+});
+
