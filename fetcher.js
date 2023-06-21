@@ -19,7 +19,7 @@
 //require request and fs
 const request = require('request');
 const fs = require('fs');
-const { constants } = fs;
+// const { constants } = fs;
 
 
 //retrieve command line arguments
@@ -71,16 +71,35 @@ request(url, (error, response, body) => {
     console.error('Error:', error);
     process.exit(1);
   }
- 
+  
+  //
   fs.writeFile(filePath, body,(error) =>{
     //print if any errors during file writing
     if (error) {
       console.error("Failed to write to specified local path");
       process.exit(1);
     } else {
+      //check if file already exists, then ask user to overwrite
+      const readline = require('readline');
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      rl.question('File already exists. Type Y to overwrite: ', (answer) => {
+        if (answer === 'Y') {
+          // Download the content and save the data
+          console.log(`Downloaded and saved ${body.length} bytes to ${filePath}`);
+          rl.close();
+        } else {
+          console.log('Skipping download');
+          rl.close();
+        }
+      });
       //If successful, print this message with length of the downloaded data and file path
       console.log(`Downloaded and saved ${body.length} bytes to ${filePath}`);
     }
   });
 });
+
 
