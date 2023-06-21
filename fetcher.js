@@ -96,9 +96,7 @@ request(url, (error, response, body) => {
           rl.close();
         }
       });
-      //If successful, print this message with length of the downloaded data and file path
-      console.log(`Downloaded and saved ${body.length} bytes to ${filePath}`);
-    }
+    }  
   });
 });
 
